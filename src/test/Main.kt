@@ -6,15 +6,20 @@ package test
 
 import java.awt.*
 
-import javax.swing.*
+import javax.swing.JFrame
+import javax.swing.BorderFactory
 
-import blazeui.component.Comp
+import blazeui.component.Button
 
 fun main(){
-	val comp1 = Comp("Hello!")
-	val comp2 = Comp("There.")
-	val comp3 = Comp("Disabled Comp")
+	val comp1 = Button("Hello!")
+	
+	val comp2 = Button("There.")
+	comp2.textAlignment = comp2.TEXT_ALIGNMENT_LEFT
+	
+	val comp3 = Button("Disabled Button")
 	comp3.isEnabled = false
+	
 	JFrame("Test Blaze UI").apply{
 		size = Dimension(300, 300)
 		setLocationRelativeTo(null)
@@ -25,6 +30,17 @@ fun main(){
 		add(comp3)
 		isVisible = true
 	}
+
+	val thread = Thread({
+		try{
+			Thread.sleep(2000)
+		}
+		catch(e: Exception){
+			e.printStackTrace()
+		}
+		comp1.text = "Hi!"
+	})
+	thread.start()
 }
 
 

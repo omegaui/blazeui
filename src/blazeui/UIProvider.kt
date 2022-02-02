@@ -52,7 +52,9 @@ class UIProvider {
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
 			g.font = font
-			return g.fontMetrics.stringWidth(text)
+			val width: Int = g.fontMetrics.stringWidth(text)
+			g.dispose()
+			return width
 		}
 
 		fun computeHeight(font: Font) : Int{
@@ -63,7 +65,9 @@ class UIProvider {
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
 			g.font = font
-			return g.fontMetrics.height
+			val height: Int = g.fontMetrics.height
+			g.dispose()
+			return height
 		}
 		
 		fun computeAscentDescent(font: Font) : Int{
@@ -74,7 +78,9 @@ class UIProvider {
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
 			g.font = font
-			return g.fontMetrics.ascent - g.fontMetrics.descent + 1
+			val ad: Int = g.fontMetrics.ascent - g.fontMetrics.descent + 1
+			g.dispose()
+			return ad
 		}
 	}
 

@@ -1,4 +1,5 @@
 /**
+ * The Button Component of Blaze UI
  * Super Flexible UI Element -- In the Making
  * Copyright (C) 2022 Omega UI
 
@@ -28,7 +29,14 @@ import blazeui.UIProvider.Companion.computeWidth
 import blazeui.UIProvider.Companion.computeHeight
 import blazeui.UIProvider.Companion.computeAscentDescent
 
-class Comp(val text: String) : JComponent(){
+class Button(var buttonText: String) : JComponent(){
+
+	var text: String = buttonText
+		set(value){
+			field = value
+			computePrefDimensions()
+			repaint()
+		}
 	
 	var backgroundColor: Color
 	var foregroundColor: Color
@@ -56,6 +64,18 @@ class Comp(val text: String) : JComponent(){
 	var textY: Int = 0
 	var textWidth: Int = 0
 	var textHeight: Int = 0
+	
+	var textLeftAlignmentMargin: Int = 5
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var textRightAlignmentMargin: Int = 5
+		set(value){
+			field = value
+			repaint()
+		}
 
 	var TEXT_ALIGNMENT_CENTER: Int = 0
 	var TEXT_ALIGNMENT_RIGHT: Int = 1
@@ -80,6 +100,7 @@ class Comp(val text: String) : JComponent(){
 	var autoComputeDimensions: Boolean = true
 		set(value){
 			field = value
+			computePrefDimensions()
 			repaint()
 		}
 
@@ -151,8 +172,6 @@ class Comp(val text: String) : JComponent(){
 	}
 
 	override fun paintComponent(abstractGraphics: Graphics){
-		computePrefDimensions()
-		
 		var g: Graphics2D = abstractGraphics as Graphics2D
 		
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
@@ -170,34 +189,29 @@ class Comp(val text: String) : JComponent(){
 		super.paintComponent(g)
 	}
 
-	fun computePrefDimensions(){
-		if(autoComputeDimensions){
-			size = Dimension(computeWidth(font, text) + horizontalPadding, computeHeight(font) + verticalPadding)
-			preferredSize = size
-		}
-	}
-
 	fun paintBackground(g: Graphics2D){
-		if(isEnabled)
-			g.color = backgroundColor
-		else
-			g.color = disabledStateBackgroundColor
+		g.color = if (isEnabled) backgroundColor else disabledStateBackgroundColor
 		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
 	}
 
 	fun paintText(g: Graphics2D){
+		textWidth = computeWidth(font, text)
+		textHeight = computeHeight(font)
+		
 		if(customTextX == -1){
+			textY = height/2 - textHeight/2 + computeAscentDescent(font)
 			if(textAlignment == TEXT_ALIGNMENT_CENTER){
-				textWidth = computeWidth(font, text)
-				textHeight = computeHeight(font)
 				textX = width/2 - textWidth/2
-				textY = height/2 - textHeight/2 + computeAscentDescent(font)
+			}
+			else if(textAlignment == TEXT_ALIGNMENT_LEFT){
+				textX = textLeftAlignmentMargin
+			}
+			else if(textAlignment == TEXT_ALIGNMENT_RIGHT){
+				textX = width - textWidth - textRightAlignmentMargin
 			}
 		}
-		if(isEnabled)
-			g.color = foregroundColor
-		else
-			g.color = disabledStateForegroundColor
+		
+		g.color = if (isEnabled) foregroundColor else disabledStateForegroundColor
 		g.font = font
 		g.drawString(text, textX, textY)
 	}
@@ -221,6 +235,19 @@ class Comp(val text: String) : JComponent(){
 			return
 		g.color = focussedStateColor
 		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+	}
+	
+	fun computePrefDimensions(){
+		if(autoComputeDimensions){
+			size = Dimension(computeWidth(font, text) + horizontalPadding, computeHeight(font) + verticalPadding)
+			preferredSize = size
+		}
+	}
+	
+	override fun setFont(font: Font){
+		super.setFont(font)
+		computePrefDimensions()
+		repaint()
 	}
 }
 
