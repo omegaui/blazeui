@@ -4,12 +4,12 @@
 
 package test
 
-import java.awt.*
-
-import javax.swing.JFrame
-import javax.swing.BorderFactory
-
 import blazeui.component.Button
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.FlowLayout
+import javax.swing.JFrame
+import javax.swing.JPanel
 
 fun main(){
 	val comp1 = Button("Hello!")
@@ -24,23 +24,15 @@ fun main(){
 		size = Dimension(300, 300)
 		setLocationRelativeTo(null)
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-		layout = FlowLayout()
+		contentPane = JPanel(FlowLayout()).apply{
+			background = Color.WHITE
+		}
+
 		add(comp1)
 		add(comp2)
 		add(comp3)
 		isVisible = true
 	}
-
-	val thread = Thread({
-		try{
-			Thread.sleep(2000)
-		}
-		catch(e: Exception){
-			e.printStackTrace()
-		}
-		comp1.text = "Hi!"
-	})
-	thread.start()
 }
 
 
