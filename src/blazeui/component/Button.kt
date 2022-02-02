@@ -25,11 +25,11 @@ import javax.swing.*
 
 import java.awt.event.*
 
-import blazeui.UIProvider.Companion.computeWidth
-import blazeui.UIProvider.Companion.computeHeight
-import blazeui.UIProvider.Companion.computeAscentDescent
+import blazeui.PaintBoard
 
-class Button(var buttonText: String) : JComponent(){
+import blazeui.UIProvider.Companion as UIProvider
+
+class Button(buttonText: String) : JComponent(){
 
 	var text: String = buttonText
 		set(value){
@@ -37,15 +37,79 @@ class Button(var buttonText: String) : JComponent(){
 			computePrefDimensions()
 			repaint()
 		}
-	
-	var backgroundColor: Color
-	var foregroundColor: Color
-	var hoverStateColor: Color
-	var pressedStateColor: Color
-	var focussedStateColor: Color
-	var disabledStateBackgroundColor: Color
-	var disabledStateForegroundColor: Color
 
+	var backgroundPaintBoard: PaintBoard = PaintBoard {}
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var textPaintBoard: PaintBoard = PaintBoard {}
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var hoverEventPaintBoard: PaintBoard = PaintBoard {}
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var pressEventPaintBoard: PaintBoard = PaintBoard {}
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var focusEventPaintBoard: PaintBoard = PaintBoard {}
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var backgroundColor: Color = UIProvider.backgroundColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var foregroundColor: Color = UIProvider.foregroundColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var hoverStateColor: Color = UIProvider.hoverStateColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var pressedStateColor: Color = UIProvider.pressedStateColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var focussedStateColor: Color = UIProvider.focussedStateColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var disabledStateBackgroundColor: Color = UIProvider.disabledStateBackgroundColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
+	var disabledStateForegroundColor: Color = UIProvider.disabledStateForegroundColor
+		set(value){
+			field = value
+			repaint()
+		}
+	
 	var horizontalPadding: Int = 20
 	var verticalPadding: Int = 10
 
@@ -105,16 +169,56 @@ class Button(var buttonText: String) : JComponent(){
 		}
 
 	init{
-		backgroundColor = blazeui.UIProvider.Companion.backgroundColor
-		foregroundColor = blazeui.UIProvider.Companion.foregroundColor
-		hoverStateColor = blazeui.UIProvider.Companion.hoverStateColor
-		pressedStateColor = blazeui.UIProvider.Companion.pressedStateColor
-		focussedStateColor = blazeui.UIProvider.Companion.focussedStateColor
-		disabledStateBackgroundColor = blazeui.UIProvider.Companion.disabledStateBackgroundColor
-		disabledStateForegroundColor = blazeui.UIProvider.Companion.disabledStateForegroundColor
-
-		font = blazeui.UIProvider.Companion.defaultFont
+		font = UIProvider.defaultFont
 	
+		backgroundPaintBoard = PaintBoard {
+			it.color = if (isEnabled) backgroundColor else disabledStateBackgroundColor
+			it.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+		}
+
+		textPaintBoard = PaintBoard {
+			textWidth = UIProvider.computeWidth(font, text)
+			textHeight = UIProvider.computeHeight(font)
+			
+			if(customTextX == -1){
+				textY = height/2 - textHeight/2 + UIProvider.computeAscentDescent(font)
+				if(textAlignment == TEXT_ALIGNMENT_CENTER){
+					textX = width/2 - textWidth/2
+				}
+				else if(textAlignment == TEXT_ALIGNMENT_LEFT){
+					textX = textLeftAlignmentMargin
+				}
+				else if(textAlignment == TEXT_ALIGNMENT_RIGHT){
+					textX = width - textWidth - textRightAlignmentMargin
+				}
+			}
+			
+			it.color = if (isEnabled) foregroundColor else disabledStateForegroundColor
+			it.font = font
+			it.drawString(text, textX, textY)
+		}
+
+		hoverEventPaintBoard = PaintBoard {
+			if(mouseInside){
+				it.color = hoverStateColor
+				it.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+			}
+		}
+
+		pressEventPaintBoard = PaintBoard {
+			if(mousePress){
+				it.color = pressedStateColor
+				it.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+			}
+		}
+
+		focusEventPaintBoard = PaintBoard {
+			if(focussed){
+				it.color = focussedStateColor
+				it.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+			}
+		}
+		
 		addMouseListener(object: MouseAdapter(){
 			override fun mouseEntered(e: MouseEvent){
 				if(!isEnabled)
@@ -172,7 +276,7 @@ class Button(var buttonText: String) : JComponent(){
 	}
 
 	override fun paintComponent(abstractGraphics: Graphics){
-		var g: Graphics2D = abstractGraphics as Graphics2D
+		val g: Graphics2D = abstractGraphics as Graphics2D
 		
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -190,56 +294,28 @@ class Button(var buttonText: String) : JComponent(){
 	}
 
 	fun paintBackground(g: Graphics2D){
-		g.color = if (isEnabled) backgroundColor else disabledStateBackgroundColor
-		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+		backgroundPaintBoard.paint(g)
 	}
 
 	fun paintText(g: Graphics2D){
-		textWidth = computeWidth(font, text)
-		textHeight = computeHeight(font)
-		
-		if(customTextX == -1){
-			textY = height/2 - textHeight/2 + computeAscentDescent(font)
-			if(textAlignment == TEXT_ALIGNMENT_CENTER){
-				textX = width/2 - textWidth/2
-			}
-			else if(textAlignment == TEXT_ALIGNMENT_LEFT){
-				textX = textLeftAlignmentMargin
-			}
-			else if(textAlignment == TEXT_ALIGNMENT_RIGHT){
-				textX = width - textWidth - textRightAlignmentMargin
-			}
-		}
-		
-		g.color = if (isEnabled) foregroundColor else disabledStateForegroundColor
-		g.font = font
-		g.drawString(text, textX, textY)
+		textPaintBoard.paint(g)
 	}
 
 	fun paintHoverEvent(g: Graphics2D){
-		if(!mouseInside)
-			return
-		g.color = hoverStateColor
-		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+		hoverEventPaintBoard.paint(g)
 	}
 
 	fun paintPressEvent(g: Graphics2D){
-		if(!mousePress)
-			return
-		g.color = pressedStateColor
-		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+		pressEventPaintBoard.paint(g)
 	}
 	
 	fun paintFocusEvent(g: Graphics2D){
-		if(!focussed)
-			return
-		g.color = focussedStateColor
-		g.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
+		focusEventPaintBoard.paint(g)
 	}
 	
 	fun computePrefDimensions(){
 		if(autoComputeDimensions){
-			size = Dimension(computeWidth(font, text) + horizontalPadding, computeHeight(font) + verticalPadding)
+			size = Dimension(UIProvider.computeWidth(font, text) + horizontalPadding, UIProvider.computeHeight(font) + verticalPadding)
 			preferredSize = size
 		}
 	}
