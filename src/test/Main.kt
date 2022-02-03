@@ -6,6 +6,7 @@ package test
 
 import blazeui.UIProvider
 import blazeui.component.Button
+import blazeui.listener.ValidationTask
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -33,12 +34,15 @@ fun main(){
 	val comp3 = Button("Disabled Button")
 	comp3.isEnabled = false
 
-	val comp4 = Button("Button with Custom textX")
+	val comp4 = Button("Custom textX")
 	comp4.customTextX = 15
 
 	val comp5 = Button(getImage("icons8-console-50.png"))
 
 	val comp6 = Button("Unscaled Image", getImage("icons8-code-50.png"))
+	comp6.validationTask = ValidationTask {
+		return@ValidationTask false
+	}
 
 	val comp7 = Button("Scaled Image", getImage("icons8-energy-64.png"), 25)
 
@@ -51,7 +55,7 @@ fun main(){
 
 		size = Dimension(300, 300)
 		setLocationRelativeTo(null)
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+		defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 		contentPane = JPanel(FlowLayout()).apply{
 			background = Color.WHITE
 		}

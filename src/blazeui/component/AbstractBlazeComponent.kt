@@ -22,6 +22,7 @@ package blazeui.component
 
 import blazeui.PaintBoard
 import blazeui.UIProvider
+import blazeui.listener.ValidationTask
 import java.awt.*
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
@@ -67,6 +68,12 @@ abstract class AbstractBlazeComponent() : JComponent(){
             repaint()
         }
 
+    var failedValidationPaintBoard: PaintBoard = PaintBoard {}
+        set(value){
+            field = value
+            repaint()
+        }
+
     var backgroundColor: Color = UIProvider.backgroundColor
         set(value){
             field = value
@@ -97,6 +104,12 @@ abstract class AbstractBlazeComponent() : JComponent(){
             repaint()
         }
 
+    var failedValidationColor: Color = UIProvider.failedValidationColor
+        set(value){
+            field = value
+            repaint()
+        }
+
     var disabledStateBackgroundColor: Color = UIProvider.disabledStateBackgroundColor
         set(value){
             field = value
@@ -108,6 +121,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
             field = value
             repaint()
         }
+
     val PAINT_NO_CONTENT = -1
     val PAINT_TEXT_ONLY = 0
     val PAINT_IMAGE_ONLY = 1
@@ -228,7 +242,12 @@ abstract class AbstractBlazeComponent() : JComponent(){
 
     var mouseInside: Boolean = false
     var mousePress: Boolean = false
+    var mouseClick: Boolean = false
     var focussed: Boolean = false
+
+    var validationTask: ValidationTask = ValidationTask { true }
+
+    var lastValidationResult: Boolean = true
 
     constructor(content: String) : this() {
         initialize(content)
@@ -370,6 +389,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
                 if(!isEnabled)
                     return
                 mousePress = false
+                mouseClick = false
                 repaint()
             }
 
@@ -379,6 +399,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
                 if(isFocusable){
                     grabFocus()
                     focussed = true
+                    mouseClick = true
                 }
                 repaint()
             }
@@ -395,6 +416,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
                 if(!isEnabled)
                     return
                 focussed = false
+                mouseClick = false
                 repaint()
             }
         })
@@ -405,12 +427,18 @@ abstract class AbstractBlazeComponent() : JComponent(){
         computePrefDimensions()
     }
 
-    override fun paintComponent(abstractGraphics: Graphics){
+    fun prepareGraphics(abstractGraphics: Graphics) : Graphics2D{
         val g: Graphics2D = abstractGraphics as Graphics2D
-
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+        return g
+    }
+
+    override fun paintComponent(abstractGraphics: Graphics){
+        performPrePaintOperations()
+
+        val g: Graphics2D = prepareGraphics(abstractGraphics)
 
         paintBackground(g)
 
@@ -432,8 +460,16 @@ abstract class AbstractBlazeComponent() : JComponent(){
             paintFocusEvent(g)
         }
 
+        paintExtra(g)
+
         super.paintComponent(g)
+
+        performPostPaintOperations()
     }
+
+    abstract fun performPrePaintOperations()
+    abstract fun performPostPaintOperations()
+    abstract fun paintExtra(g: Graphics2D)
 
     fun paintBackground(g: Graphics2D){
         backgroundPaintBoard.paint(g)
@@ -457,6 +493,15 @@ abstract class AbstractBlazeComponent() : JComponent(){
 
     fun paintFocusEvent(g: Graphics2D){
         focusEventPaintBoard.paint(g)
+    }
+
+    fun paintValidation(g: Graphics2D){
+        if(!lastValidationResult)
+            failedValidationPaintBoard.paint(g)
+    }
+
+    fun getValidationResult() : Boolean {
+        return validationTask.performValidation(this)
     }
 
     fun computePrefDimensions(){

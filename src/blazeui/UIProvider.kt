@@ -33,9 +33,10 @@ class UIProvider {
 
 		var backgroundColor: Color = Color.decode("#ffffff")
 		var foregroundColor: Color = Color.decode("#3c5181")
-		var hoverStateColor: Color = Color(60, 81, 129, 100)
-		var pressedStateColor: Color = Color(110, 94, 189, 100)
+		var hoverStateColor: Color = Color(60, 81, 129, 60)
+		var pressedStateColor: Color = Color(110, 94, 189, 60)
 		var focussedStateColor: Color = Color(73, 208, 152, 60)
+		var failedValidationColor: Color = Color(208, 73, 120, 60)
 		var disabledStateBackgroundColor: Color = Color.decode("#bdbfbd")
 		var disabledStateForegroundColor: Color = Color.decode("#636264")
 

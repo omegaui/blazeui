@@ -21,6 +21,8 @@ package blazeui.component
 
 import blazeui.PaintBoard
 import java.awt.Font
+import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
 class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
@@ -60,12 +62,30 @@ class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
 		}
 
 		focusEventPaintBoard = PaintBoard {
-			if(focussed){
+			if(focussed && lastValidationResult){
 				it.color = focussedStateColor
 				it.fillRoundRect(0, 0, width, height, arcWidth, arcHeight)
 			}
 		}
 
+		failedValidationPaintBoard = PaintBoard {
+			it.color = failedValidationColor
+			it.fillRoundRect(0, 0, width - 1, height - 1, arcWidth, arcHeight)
+		}
+	}
+
+	override fun performPrePaintOperations() {
+		if(mouseClick)
+			lastValidationResult = getValidationResult()
+	}
+
+	override fun performPostPaintOperations() {
+		if(mouseInside && !lastValidationResult)
+			lastValidationResult = true
+	}
+
+	override fun paintExtra(g: Graphics2D) {
+		paintValidation(g)
 	}
 
 	override fun setFont(font: Font){
