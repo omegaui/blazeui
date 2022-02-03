@@ -38,14 +38,14 @@ fun main(){
 
 	val comp5 = Button(getImage("icons8-console-50.png"))
 
-	val comp6 = Button("Unscaled Image", getImage("icons8-console-50.png"))
+	val comp6 = Button("Unscaled Image", getImage("icons8-code-50.png"))
 
-	val comp7 = Button("Scaled Image", getImage("icons8-console-50.png"), 25)
+	val comp7 = Button("Scaled Image", getImage("icons8-energy-64.png"), 25)
 
-	val comp8 = Button("Scaled Right Aligned Image", getImage("icons8-console-50.png"), 25)
+	val comp8 = Button("Scaled Right Aligned Image", getImage("icons8-dart-48.png"), 25)
 	comp8.imageAlignment = comp8.IMAGE_ALIGNMENT_RIGHT
 
-	val comp9 = Button(getImage("icons8-console-50.png"))
+	val comp9 = Button(getImage("icons8-chatbot-50.png"), 25)
 
 	JFrame("Test Blaze UI").apply{
 

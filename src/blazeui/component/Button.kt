@@ -33,6 +33,10 @@ class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
 		initialize(content, contentImage)
 	}
 
+	constructor(contentImage: BufferedImage, imageSize: Int) : this("") {
+		initialize(contentImage, imageSize)
+	}
+
 	constructor(content: String, contentImage: BufferedImage, imageSize: Int) : this(content) {
 		initialize(content, contentImage, imageSize)
 	}
