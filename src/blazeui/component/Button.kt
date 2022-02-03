@@ -20,8 +20,6 @@
 package blazeui.component
 
 import blazeui.PaintBoard
-import java.awt.Font
-import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
@@ -86,12 +84,6 @@ class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
 
 	override fun paintExtra(g: Graphics2D) {
 		paintValidation(g)
-	}
-
-	override fun setFont(font: Font){
-		super.setFont(font)
-		computePrefDimensions()
-		repaint()
 	}
 }
 

@@ -130,7 +130,17 @@ abstract class AbstractBlazeComponent() : JComponent(){
     var currentPaintMode: Int = PAINT_NO_CONTENT
 
     var horizontalPadding: Int = 20
+        set(value){
+            field = value
+            computePrefDimensions()
+            repaint()
+        }
     var verticalPadding: Int = 10
+        set(value){
+            field = value
+            computePrefDimensions()
+            repaint()
+        }
 
     var arcWidth: Int = 0
         set(value){
@@ -504,7 +514,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
         return validationTask.performValidation(this)
     }
 
-    fun computePrefDimensions(){
+    open fun computePrefDimensions(){
         if(autoComputeDimensions){
             currentPaintMode = getPaintMode()
             if(currentPaintMode == PAINT_TEXT_ONLY) {

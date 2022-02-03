@@ -6,7 +6,6 @@ package test
 
 import blazeui.UIProvider
 import blazeui.component.Button
-import blazeui.listener.ValidationTask
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -26,32 +25,12 @@ fun getImage(name: String) : BufferedImage {
 }
 
 fun main(){
-	val comp1 = Button("Button with Text at Center")
-	
-	val comp2 = Button("Button with Text at Left")
-	comp2.textAlignment = comp2.TEXT_ALIGNMENT_LEFT
-	
-	val comp3 = Button("Disabled Button")
-	comp3.isEnabled = false
 
-	val comp4 = Button("Custom textX")
-	comp4.customTextX = 15
+	val comp1 = Button(getImage("icons8-dart-48.png"), 24)
+	comp1.horizontalPadding = 6
+	comp1.verticalPadding = 6
 
-	val comp5 = Button(getImage("icons8-console-50.png"))
-
-	val comp6 = Button("Unscaled Image", getImage("icons8-code-50.png"))
-	comp6.validationTask = ValidationTask {
-		return@ValidationTask false
-	}
-
-	val comp7 = Button("Scaled Image", getImage("icons8-energy-64.png"), 25)
-
-	val comp8 = Button("Scaled Right Aligned Image", getImage("icons8-dart-48.png"), 25)
-	comp8.imageAlignment = comp8.IMAGE_ALIGNMENT_RIGHT
-
-	val comp9 = Button(getImage("icons8-chatbot-50.png"), 25)
-
-	JFrame("Test Blaze UI").apply{
+	JFrame("Test Blaze UI").apply {
 
 		size = Dimension(300, 300)
 		setLocationRelativeTo(null)
@@ -61,15 +40,8 @@ fun main(){
 		}
 
 		add(comp1)
-		add(comp2)
-		add(comp3)
-		add(comp4)
-		add(comp5)
-		add(comp6)
-		add(comp7)
-		add(comp8)
-		add(comp9.also { it.isEnabled = false })
 		isVisible = true
+
 	}
 }
 
