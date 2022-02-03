@@ -1,3 +1,23 @@
+/**
+ * The Abstract Component of Blaze UI
+ * This is the parent of all UI Elements except the Text Input Components
+ * Super Flexible UI Element -- In the Making
+ * Copyright (C) 2022 Omega UI
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package blazeui.component
 
 import blazeui.PaintBoard
@@ -7,16 +27,10 @@ import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.awt.image.BufferedImage
 import javax.swing.JComponent
 
 abstract class AbstractBlazeComponent() : JComponent(){
-    var text: String = ""
-        set(value){
-            field = value
-            computePrefDimensions()
-            repaint()
-        }
-
     var backgroundPaintBoard: PaintBoard = PaintBoard {}
         set(value){
             field = value
@@ -24,6 +38,12 @@ abstract class AbstractBlazeComponent() : JComponent(){
         }
 
     var textPaintBoard: PaintBoard = PaintBoard {}
+        set(value){
+            field = value
+            repaint()
+        }
+
+    var imagePaintBoard: PaintBoard = PaintBoard {}
         set(value){
             field = value
             repaint()
@@ -88,6 +108,12 @@ abstract class AbstractBlazeComponent() : JComponent(){
             field = value
             repaint()
         }
+    val PAINT_NO_CONTENT = -1
+    val PAINT_TEXT_ONLY = 0
+    val PAINT_IMAGE_ONLY = 1
+    val PAINT_BOTH_TEXT_AND_IMAGE = 2
+
+    var currentPaintMode: Int = PAINT_NO_CONTENT
 
     var horizontalPadding: Int = 20
     var verticalPadding: Int = 10
@@ -97,6 +123,7 @@ abstract class AbstractBlazeComponent() : JComponent(){
             field = value
             repaint()
         }
+
     var arcHeight: Int = 0
         set(value){
             field = value
@@ -106,6 +133,19 @@ abstract class AbstractBlazeComponent() : JComponent(){
     var autoComputeDimensions: Boolean = true
         set(value){
             field = value
+            repaint()
+        }
+
+    var useImageDimensionsFromObject: Boolean = true
+        set(value){
+            field = value
+            repaint()
+        }
+
+    var text: String = ""
+        set(value){
+            field = value
+            computePrefDimensions()
             repaint()
         }
 
@@ -126,9 +166,9 @@ abstract class AbstractBlazeComponent() : JComponent(){
             repaint()
         }
 
-    var TEXT_ALIGNMENT_CENTER: Int = 0
-    var TEXT_ALIGNMENT_RIGHT: Int = 1
-    var TEXT_ALIGNMENT_LEFT: Int = 2
+    val TEXT_ALIGNMENT_CENTER: Int = 0
+    val TEXT_ALIGNMENT_RIGHT: Int = 1
+    val TEXT_ALIGNMENT_LEFT: Int = 2
 
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER
         set(value){
@@ -142,9 +182,109 @@ abstract class AbstractBlazeComponent() : JComponent(){
             repaint()
         }
 
+    var image: BufferedImage = UIProvider.image
+        set(value){
+            field = value
+            computePrefDimensions()
+            repaint()
+        }
+
+    var imageX: Int = 0
+    var imageY: Int = 0
+    var imageWidth: Int = 0
+        get() = if (useImageDimensionsFromObject) image.width else field
+    var imageHeight: Int = 0
+        get() = if (useImageDimensionsFromObject) image.height else field
+
+    var scaledImageInstance: Image = image
+
+    var imageLeftAlignmentMargin: Int = 5
+        set(value){
+            field = value
+            repaint()
+        }
+
+    var imageRightAlignmentMargin: Int = 5
+        set(value){
+            field = value
+            repaint()
+        }
+
+    val IMAGE_ALIGNMENT_CENTER: Int = 0
+    val IMAGE_ALIGNMENT_RIGHT: Int = 1
+    val IMAGE_ALIGNMENT_LEFT: Int = 2
+
+    var imageAlignment: Int = IMAGE_ALIGNMENT_CENTER
+        set(value){
+            field = value
+            repaint()
+        }
+
+    var customImageX: Int = -1
+        set(value){
+            field = value
+            repaint()
+        }
+
     var mouseInside: Boolean = false
     var mousePress: Boolean = false
     var focussed: Boolean = false
+
+    constructor(content: String) : this() {
+        initialize(content)
+    }
+
+    constructor(contentImage: BufferedImage) : this() {
+        initialize(contentImage)
+    }
+
+    constructor(contentImage: BufferedImage, imageSize: Int) : this() {
+        initialize(contentImage, imageSize)
+    }
+
+    constructor(content: String, contentImage: BufferedImage) : this() {
+        initialize(content, contentImage)
+    }
+
+    constructor(content: String, contentImage: BufferedImage, imageSize: Int) : this() {
+        initialize(content, contentImage, imageSize)
+    }
+
+    fun initialize(content: String) {
+        text = content
+    }
+
+    fun initialize(contentImage: BufferedImage) {
+        image = contentImage
+        scaledImageInstance = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH)
+    }
+
+    fun initialize(content: String, contentImage: BufferedImage) {
+        text = content
+        image = contentImage
+        scaledImageInstance = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH)
+        imageAlignment = IMAGE_ALIGNMENT_LEFT
+    }
+
+    fun initialize(contentImage: BufferedImage, imageSize: Int) {
+        image = contentImage
+        useImageDimensionsFromObject = false
+        imageWidth = imageSize
+        imageHeight = imageSize
+        scaledImageInstance = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH)
+        computePrefDimensions()
+    }
+
+    fun initialize(content: String, contentImage: BufferedImage, imageSize: Int) {
+        text = content
+        image = contentImage
+        useImageDimensionsFromObject = false
+        imageWidth = imageSize
+        imageHeight = imageSize
+        scaledImageInstance = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH)
+        imageAlignment = IMAGE_ALIGNMENT_LEFT
+        computePrefDimensions()
+    }
 
     init {
         font = UIProvider.defaultFont
@@ -158,10 +298,17 @@ abstract class AbstractBlazeComponent() : JComponent(){
             textWidth = UIProvider.computeWidth(font, text)
             textHeight = UIProvider.computeHeight(font)
 
+            textY = height/2 - textHeight/2 + UIProvider.computeAscentDescent(font)
             if(customTextX == -1){
-                textY = height/2 - textHeight/2 + UIProvider.computeAscentDescent(font)
                 if(textAlignment == TEXT_ALIGNMENT_CENTER){
-                    textX = width/2 - textWidth/2
+                    if(currentPaintMode == PAINT_BOTH_TEXT_AND_IMAGE){
+                        if(imageAlignment == IMAGE_ALIGNMENT_LEFT)
+                            textX = imageLeftAlignmentMargin + imageWidth + textHeight/2
+                        else if(imageAlignment == IMAGE_ALIGNMENT_RIGHT)
+                            textX = width - (textWidth + imageRightAlignmentMargin + imageWidth + textHeight/2)
+                    }
+                    else
+                        textX = width/2 - textWidth/2
                 }
                 else if(textAlignment == TEXT_ALIGNMENT_LEFT){
                     textX = textLeftAlignmentMargin
@@ -170,10 +317,31 @@ abstract class AbstractBlazeComponent() : JComponent(){
                     textX = width - textWidth - textRightAlignmentMargin
                 }
             }
+            else
+                textX = customTextX
 
             it.color = if (isEnabled) foregroundColor else disabledStateForegroundColor
             it.font = font
             it.drawString(text, textX, textY)
+        }
+
+        imagePaintBoard = PaintBoard {
+            imageY = height/2 - imageHeight/2
+            if(customImageX == -1){
+                if(imageAlignment == IMAGE_ALIGNMENT_CENTER){
+                    imageX = width/2 - imageWidth/2
+                }
+                else if(imageAlignment == IMAGE_ALIGNMENT_LEFT){
+                    imageX = imageLeftAlignmentMargin
+                }
+                else if(imageAlignment == IMAGE_ALIGNMENT_RIGHT){
+                    imageX = width - imageWidth - imageRightAlignmentMargin
+                }
+            }
+            else
+                imageX = customImageX
+
+            it.drawImage(scaledImageInstance, imageX, imageY, imageWidth, imageHeight, this)
         }
 
         this.addMouseListener(object: MouseAdapter(){
@@ -232,9 +400,9 @@ abstract class AbstractBlazeComponent() : JComponent(){
         })
     }
 
-
-    constructor(content: String) : this() {
-        text = content
+    override fun setFont(font: Font){
+        super.setFont(font)
+        computePrefDimensions()
     }
 
     override fun paintComponent(abstractGraphics: Graphics){
@@ -245,7 +413,19 @@ abstract class AbstractBlazeComponent() : JComponent(){
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
         paintBackground(g)
-        paintText(g)
+
+        currentPaintMode = getPaintMode()
+        if(currentPaintMode != PAINT_NO_CONTENT) {
+            if(currentPaintMode == PAINT_TEXT_ONLY)
+                paintText(g)
+            else if(currentPaintMode == PAINT_IMAGE_ONLY)
+                paintImage(g)
+            else {
+                paintText(g)
+                paintImage(g)
+            }
+        }
+
         if(isEnabled){
             paintHoverEvent(g)
             paintPressEvent(g)
@@ -263,6 +443,10 @@ abstract class AbstractBlazeComponent() : JComponent(){
         textPaintBoard.paint(g)
     }
 
+    fun paintImage(g: Graphics2D){
+        imagePaintBoard.paint(g)
+    }
+
     fun paintHoverEvent(g: Graphics2D){
         hoverEventPaintBoard.paint(g)
     }
@@ -277,8 +461,39 @@ abstract class AbstractBlazeComponent() : JComponent(){
 
     fun computePrefDimensions(){
         if(autoComputeDimensions){
-            size = Dimension(UIProvider.computeWidth(font, text) + horizontalPadding, UIProvider.computeHeight(font) + verticalPadding)
-            preferredSize = size
+            currentPaintMode = getPaintMode()
+            if(currentPaintMode == PAINT_TEXT_ONLY) {
+                size = Dimension(
+                    UIProvider.computeWidth(font, text) + horizontalPadding,
+                    UIProvider.computeHeight(font) + verticalPadding
+                )
+                preferredSize = size
+            }
+            else if(currentPaintMode == PAINT_IMAGE_ONLY){
+                size = Dimension(
+                    imageWidth + horizontalPadding,
+                    imageHeight + verticalPadding
+                )
+                preferredSize = size
+            }
+            else if(currentPaintMode == PAINT_BOTH_TEXT_AND_IMAGE){
+                size = Dimension(
+                    UIProvider.computeWidth(font, text) + imageWidth + horizontalPadding,
+                    UIProvider.computeHeight(font) + imageHeight + verticalPadding
+                )
+                preferredSize = size
+            }
         }
     }
+
+    fun getPaintMode() : Int {
+        if(text.isBlank() && image == UIProvider.image)
+            return PAINT_NO_CONTENT
+        else if(!text.isBlank() && image == UIProvider.image)
+            return PAINT_TEXT_ONLY
+        else if(text.isBlank() && image != UIProvider.image)
+            return PAINT_IMAGE_ONLY
+        return PAINT_BOTH_TEXT_AND_IMAGE
+    }
+
 }

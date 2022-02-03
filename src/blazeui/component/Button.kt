@@ -21,8 +21,21 @@ package blazeui.component
 
 import blazeui.PaintBoard
 import java.awt.Font
+import java.awt.image.BufferedImage
 
 class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
+
+	constructor(contentImage: BufferedImage) : this("") {
+		initialize(contentImage)
+	}
+
+	constructor(content: String, contentImage: BufferedImage) : this(content) {
+		initialize(content, contentImage)
+	}
+
+	constructor(content: String, contentImage: BufferedImage, imageSize: Int) : this(content) {
+		initialize(content, contentImage, imageSize)
+	}
 
 	init{
 		arcWidth = 6
