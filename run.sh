@@ -2,5 +2,5 @@
 
 cd bin
 
-kotlin test.MainKt
+kotlin -cp "/home/ubuntu/Documents/Omega Projects/blazeui/res:". test.MainKt
 

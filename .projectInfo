@@ -6,4 +6,5 @@
 -2
 >Opened Editors on Main Tab Panel
 -project-root$/src/blazeui/component/Button.kt
--project-root$/src/blazeui/PaintBoard.kt
+-project-root$/compile.sh
+-project-root$/run.sh

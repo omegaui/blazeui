@@ -30,6 +30,10 @@ fun main(){
 	comp1.horizontalPadding = 6
 	comp1.verticalPadding = 6
 
+	val comp2 = Button("Simple Button")
+	comp2.arcHeight = 10
+	comp2.arcWidth = 10
+
 	JFrame("Test Blaze UI").apply {
 
 		size = Dimension(300, 300)
@@ -40,6 +44,7 @@ fun main(){
 		}
 
 		add(comp1)
+		add(comp2)
 		isVisible = true
 
 	}

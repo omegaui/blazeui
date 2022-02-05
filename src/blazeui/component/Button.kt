@@ -1,4 +1,4 @@
-/**
+/*
  * The Button Component of Blaze UI
  * Super Flexible UI Element -- In the Making
  * Copyright (C) 2022 Omega UI

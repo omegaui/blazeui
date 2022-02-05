@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="java-image-filters">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/java-image-filters.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
