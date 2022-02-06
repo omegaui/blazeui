@@ -1,6 +1,7 @@
-/**
+/*
  * The Abstract Component of Blaze UI
  * This is the parent of all UI Elements except the Text Input Components
+  
  * Super Flexible UI Element -- In the Making
  * Copyright (C) 2022 Omega UI
 
