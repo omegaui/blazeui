@@ -23,7 +23,12 @@ import blazeui.PaintBoard
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
+import java.awt.event.MouseEvent
+import java.awt.event.MouseAdapter
+
 class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
+
+	var onClick: Runnable = Runnable {}	
 
 	constructor(contentImage: BufferedImage) : this("") {
 		initialize(contentImage)
@@ -70,6 +75,13 @@ class Button(buttonText: String) : AbstractBlazeComponent(buttonText){
 			it.color = failedValidationColor
 			it.fillRoundRect(0, 0, width - 1, height - 1, arcWidth, arcHeight)
 		}
+
+		addMouseListener(object: MouseAdapter(){
+			override fun mouseClicked(e: MouseEvent){
+				if(e.clickCount == 1 && e.button == 1)
+					onClick.run()
+			}
+		})
 	}
 
 	override fun performPrePaintOperations() {

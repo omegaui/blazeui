@@ -31,6 +31,9 @@ fun main(){
 	comp1.verticalPadding = 6
 
 	val comp2 = Button("Simple Button")
+	comp2.onClick = Runnable {
+		System.out.println("Hi")
+	}
 	comp2.arcHeight = 10
 	comp2.arcWidth = 10
 

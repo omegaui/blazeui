@@ -1,4 +1,4 @@
-/**
+/*
  * Default UIProvider, provides default colors and fonts for blazeui 's components-- In the Making
  * Copyright (C) 2022 Omega UI
 
@@ -31,7 +31,7 @@ class UIProvider {
 
 		var defaultFont: Font = Font("Ubuntu Mono", Font.BOLD, 14)
 
-		var backgroundColor: Color = Color.decode("#ffffff")
+		var backgroundColor: Color = Color.decode("#fcfcfc")
 		var foregroundColor: Color = Color.decode("#3c5181")
 		var hoverStateColor: Color = Color(60, 81, 129, 60)
 		var pressedStateColor: Color = Color(110, 94, 189, 60)
