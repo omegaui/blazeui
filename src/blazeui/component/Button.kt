@@ -19,7 +19,7 @@
 
 package blazeui.component
 
-import blazeui.PaintBoard
+import blazeui.paint.PaintBoard
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 

@@ -21,8 +21,8 @@
 
 package blazeui.component
 
-import blazeui.PaintBoard
-import blazeui.UIProvider
+import blazeui.paint.PaintBoard
+import blazeui.paint.UIProvider
 import blazeui.listener.ValidationTask
 import java.awt.*
 import java.awt.event.FocusAdapter

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package blazeui
+package blazeui.paint
 
 import java.awt.*
 
@@ -42,7 +42,7 @@ class UIProvider {
 
 		fun drawTextAtCenter(font: Font, g: Graphics2D, text: String, comp: JComponent){
 			g.font = font
-			g.drawString(text, comp.width/2 - computeWidth(font, text)/2, comp.height/2 - computeHeight(font)/2 + g.fontMetrics.ascent - g.fontMetrics.descent)
+			g.drawString(text, comp.width/2 - computeWidth(font, text) /2, comp.height/2 - computeHeight(font) /2 + g.fontMetrics.ascent - g.fontMetrics.descent)
 		}
 
 		fun computeWidth(font: Font, text: String) : Int{

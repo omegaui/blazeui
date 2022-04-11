@@ -1,4 +1,4 @@
-package blazeui
+package blazeui.paint
 
 import java.awt.Graphics2D
 

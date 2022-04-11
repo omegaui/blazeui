@@ -4,7 +4,7 @@
 
 package test
 
-import blazeui.UIProvider
+import blazeui.paint.UIProvider
 import blazeui.component.Button
 import java.awt.Color
 import java.awt.Dimension
@@ -32,7 +32,7 @@ fun main(){
 
 	val comp2 = Button("Simple Button")
 	comp2.onClick = Runnable {
-		System.out.println("Hi")
+		kotlin.io.println("Hi")
 	}
 	comp2.arcHeight = 10
 	comp2.arcWidth = 10
